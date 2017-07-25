@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 设置日志级别及是否自动扫描配置文件的修改 时间单位为：milliseconds、seconds、minutes和hours -->
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+	<Encoding>UTF-8</Encoding>
+	<!-- D:/PROJECT_HOME/log -->
+	<property name="log.businessType" value="upload_server"/>
+	<property name="log.base" value="/cache1/qoss"/>
+
+	<!--<timestamp key="byDay" datePattern="yyyyMMdd"/>
+    <timestamp key="byHour" datePattern="mm"/>-->
+
+	<conversionRule conversionWord="threadId" converterClass="com.cnc.qoss.log.ThreadIDConverter"/>
+	<conversionRule conversionWord="processId" converterClass="com.cnc.qoss.log.ProcessIDConverter"/>
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5level][%processId:%threadId] [${log.businessType}] [%logger] [%msg]%n</pattern>
+		</encoder>
+
+	</appender>
+
+	<appender name="debugLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/%d{yyyyMMdd,aux}/logs/${log.businessType}/%d{HH}.log</fileNamePattern>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder>
+			<!--<ImmediateFlush>false</ImmediateFlush>-->
+			<charset>UTF-8</charset>
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%msg]%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="warnLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/%d{yyyyMMdd,aux}/logs/${log.businessType}/%d{HH}.log.wf</fileNamePattern>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<!-- 独立的pattern -->
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>[%msg]%n</pattern>
+		</encoder>
+
+	</appender>
+	
+	<appender name="backupFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/%d{yyyyMMdd,aux}/logs/${log.businessType}/%d{HH}.log.wf</fileNamePattern>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<!-- 独立的pattern -->
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>[%msg]%n</pattern>
+		</encoder>
+
+	</appender>
+
+
+	<root level="INFO">
+		<appender-ref ref="debugLogFile"/>
+		<appender-ref ref="warnLogFile"/>
+		<appender-ref ref="console"/>
+	</root>
+
+</configuration>
